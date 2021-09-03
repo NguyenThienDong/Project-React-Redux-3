@@ -1,0 +1,16 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Iphone XS Max",
+      "price": 500,
+      "status": true
+    },
+    {
+      "name": "Oppo Nova 3",
+      "price": 200,
+      "status": true,
+      "id": 2
+    }
+  ]
+}
