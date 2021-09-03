@@ -28,7 +28,7 @@ function ProductActionPage(props) {
             name: txtName,
             price: parseInt(txtPrice),
             status: cbStatus
-        }).then(res => history.goBack())
+        }).then(() => history.goBack())
     }
 
     return (

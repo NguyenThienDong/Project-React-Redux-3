@@ -8,15 +8,45 @@ import callApi from "../../utils/apiCaller";
 function ProductListPage() {
     var [products, setProducts] = useState([]);
         
+    const onDelete = (id) => {
+        callApi(`products/${id}`, 'DELETE', null)
+            .then( res => {
+                if(res.status === 200){
+                    let index = findIndex(products, id)
+                    console.log(index);
+                    if(index !== -1) {
+                        products.splice(index, 1);
+                        setProducts(products);
+                    }
+                }
+            
+            })
+    }
+
     useEffect(() => {
         callApi('products', 'GET', null).then(res => setProducts(res.data))
-    }, [])
+    })
+
+    const findIndex = (products, id) => {
+        var result = -1;
+        products.forEach((product, index) => {
+            if(product.id === id) {
+                result = index;
+            }
+        });
+        return result;
+    }
 
     let result = null;
     const showProducts = (products) => {
         if (products.length > 0) {
         result = products.map((product, index) => (
-            <ProductItem key={index} product={product} index={index} />
+            <ProductItem 
+                key={index} 
+                product={product} 
+                index={index} 
+                onDelete={() => onDelete(product.id)}
+            />
         ));
         }
         return result;

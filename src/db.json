@@ -1,16 +1,22 @@
 {
   "products": [
     {
-      "id": 1,
-      "name": "Iphone XS Max",
-      "price": 500,
-      "status": true
+      "name": "Xiaomi redmi note 9 pro",
+      "price": "300",
+      "status": "false",
+      "id": 1
     },
     {
-      "name": "Oppo Nova 3",
-      "price": 200,
-      "status": true,
-      "id": 2
+      "name": "Xiaomi redmi note 9 pro",
+      "price": "300",
+      "status": "false",
+      "id": 3
+    },
+    {
+      "name": "Xiaomi redmi note 9 pro",
+      "price": "300",
+      "status": "true",
+      "id": 4
     }
   ]
 }
