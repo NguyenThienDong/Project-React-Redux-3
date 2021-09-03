@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import { Link } from "react-router-dom";
 import callApi from "../../utils/apiCaller";
 
 function ProductActionPage(props) {
@@ -6,7 +7,7 @@ function ProductActionPage(props) {
         id: '',
         txtName: '',
         txtPrice: '',
-        cbStatus: false
+        cbStatus: ''
     })
 
     const onChange = (e) => {
@@ -21,19 +22,44 @@ function ProductActionPage(props) {
 
     let {txtName, txtPrice, cbStatus} = product;
 
+    useEffect(() => {
+        var {match} = props;
+        if(match) {
+            var id = match.params.id;
+            callApi(`products/${id}`, 'GET', null).then(res => {
+                    let data = res.data;
+                    setProduct({
+                        id: data.id,
+                        txtName: data.name,
+                        txtPrice: data.price,
+                        cbStatus: data.status
+                    });
+                }   
+            )
+        }
+    }, [])//eslint-disable-line
+
     const onSubmit = (e) => {
-        let {history} = props;
+        let {history, match} = props;
         e.preventDefault();
-        callApi('products', 'POST', {
-            name: txtName,
-            price: parseInt(txtPrice),
-            status: cbStatus
-        }).then(() => history.goBack())
+        if(match) {
+            callApi(`products/${product.id}`, 'PUT', {
+                name: txtName,
+                price: parseInt(txtPrice),
+                status: cbStatus
+            }).then(() => history.goBack())
+        }else {
+            callApi('products', 'POST', {
+                name: txtName,
+                price: parseInt(txtPrice),
+                status: cbStatus
+            }).then(() => history.goBack())
+        }
     }
 
     return (
         <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <h2 className='text-center'>Thêm sản phẩm</h2><hr/>
+            <h2 className='text-center'>{(props.match && props.match.params.id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm')}</h2><hr/>
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label>Tên sản phẩm: </label>
@@ -59,13 +85,15 @@ function ProductActionPage(props) {
                                 name="cbStatus" 
                                 value={cbStatus} 
                                 onChange={onChange}
+                                checked={cbStatus}
                             />
                             Còn hàng
                         </label>
                     </div>
                     
                 </div>
-                <button type="submit" className="btn btn-primary">Thêm</button>
+                <Link to='/product-list' className="btn btn-danger mr-10">Quay lại</Link>
+                <button type="submit" className="btn btn-primary mr-10">{(props.match && props.match.params.id ? 'Lưu lại' : 'Thêm')}</button>
             </form>
             
         </div>
