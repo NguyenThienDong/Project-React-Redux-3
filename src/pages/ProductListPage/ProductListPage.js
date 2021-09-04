@@ -1,41 +1,20 @@
-import React, {useState, useEffect} from "react";
+import React, { useEffect} from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { deleteProductRequest, fetchProductsRequest } from "../../actions";
 import ProductItem from "../../components/ProductItem/ProductItem";
 import ProductList from "../../components/ProductList/ProductList";
-import callApi from "../../utils/apiCaller";
 
-function ProductListPage() {
-    var [products, setProducts] = useState([]);
+function ProductListPage(props) {
+    let {products, onFetchProducts} = props;
         
     const onDelete = (id) => {
-        callApi(`products/${id}`, 'DELETE', null)
-            .then( res => {
-                if(res.status === 200){
-                    let index = findIndex(products, id)
-                    console.log(index);
-                    if(index !== -1) {
-                        products.splice(index, 1);
-                        setProducts(products);
-                    }
-                }
-            
-            })
+        props.onDeleteProduct(id)
     }
 
     useEffect(() => {
-        callApi('products', 'GET', null).then(res => setProducts(res.data))
+        onFetchProducts();
     })
-
-    const findIndex = (products, id) => {
-        var result = -1;
-        products.forEach((product, index) => {
-            if(product.id === id) {
-                result = index;
-            }
-        });
-        return result;
-    }
 
     let result = null;
     const showProducts = (products) => {
@@ -72,4 +51,11 @@ const mapStateToProp = (state) => {
   };
 };
 
-export default connect(mapStateToProp, null)(ProductListPage);
+const mapActionsToProps = dispatch => {
+    return {
+        onFetchProducts : () => dispatch(fetchProductsRequest()),
+        onDeleteProduct : (id) => dispatch(deleteProductRequest(id))
+    }
+}
+
+export default connect(mapStateToProp, mapActionsToProps)(ProductListPage);
